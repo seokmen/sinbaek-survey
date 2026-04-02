@@ -100,7 +100,7 @@
     flex: 1;
   }
 
-  select, input[type="text"] {
+  select, input[type="text"], input[type="number"] {
     width: 100%;
     padding: 10px 14px;
     border: 1.5px solid var(--border);
@@ -121,7 +121,7 @@
     padding-right: 36px;
   }
 
-  select:focus, input[type="text"]:focus {
+  select:focus, input[type="text"]:focus, input[type="number"]:focus {
     outline: none;
     border-color: var(--primary-light);
     box-shadow: 0 0 0 3px rgba(37,99,199,0.10);
@@ -225,32 +225,75 @@
         <label for="grade">학년</label>
         <select id="grade">
           <option value="">선택</option>
-          <option value="1">1학년</option>
-          <option value="2">2학년</option>
-          <option value="3">3학년</option>
+          <option value="1학년">1학년</option>
+          <option value="2학년">2학년</option>
+          <option value="3학년">3학년</option>
         </select>
       </div>
       <div class="form-group">
         <label for="classNum">반</label>
         <select id="classNum">
           <option value="">선택</option>
-          <option value="1">1반</option>
-          <option value="2">2반</option>
-          <option value="3">3반</option>
-          <option value="4">4반</option>
-          <option value="5">5반</option>
-          <option value="6">6반</option>
-          <option value="7">7반</option>
-          <option value="8">8반</option>
-          <option value="9">9반</option>
-          <option value="10">10반</option>
+          <option value="1반">1반</option>
+          <option value="2반">2반</option>
+          <option value="3반">3반</option>
+          <option value="4반">4반</option>
+          <option value="5반">5반</option>
+          <option value="6반">6반</option>
+          <option value="7반">7반</option>
+          <option value="8반">8반</option>
+          <option value="9반">9반</option>
+          <option value="10반">10반</option>
         </select>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="name">이름</label>
-      <input type="text" id="name" placeholder="홍길동" maxlength="10" autocomplete="off">
+    <div class="row">
+      <div class="form-group">
+        <label for="number">출석번호</label>
+        <select id="number">
+          <option value="">선택</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="26">26</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="29">29</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+          <option value="32">32</option>
+          <option value="33">33</option>
+          <option value="34">34</option>
+          <option value="35">35</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:2;">
+        <label for="name">이름</label>
+        <input type="text" id="name" placeholder="홍길동" maxlength="10" autocomplete="off">
+      </div>
     </div>
 
     <div class="notice">
@@ -266,29 +309,37 @@
   <div class="done" id="doneArea">
     <div class="icon">✅</div>
     <h2>확인 완료!</h2>
-    <p>잠시 후 설문 페이지로 이동합니다.<br>이동하지 않으면 아래 버튼을 눌러주세요.</p>
-    <div class="countdown" id="countdown">3</div>
-    <button class="btn" id="goBtn" onclick="goSurvey()" style="margin-top:4px;">지금 바로 이동</button>
+    <p>아래 인증번호를 복사한 뒤,<br>설문 페이지에서 입력해주세요.</p>
+
+    <div style="margin: 20px 0;">
+      <div style="background: var(--accent); border: 2px dashed var(--primary); border-radius: 10px; padding: 16px; text-align: center;">
+        <div style="font-size: 11px; color: var(--sub); margin-bottom: 6px;">인증번호</div>
+        <div id="authCodeDisplay" style="font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: 0.15em;"></div>
+      </div>
+      <button class="btn" onclick="copyCode()" id="copyBtn" style="margin-top: 10px; background: var(--success);">📋 복사하기</button>
+      <div id="copyMsg" style="font-size: 12px; color: var(--success); margin-top: 6px; min-height: 18px;"></div>
+    </div>
+
+    <p style="font-size: 13px; color: var(--sub);">복사 후 아래 버튼을 눌러 설문을 시작하세요.</p>
+    <button class="btn" id="goBtn" onclick="goSurvey()" style="margin-top: 14px;">설문 참여하기 →</button>
   </div>
 </div>
 
 <div class="footer">신백중학교 학교폭력 담당 · 문의: 교무실</div>
 
 <script>
-  // ★ 여기에 Apps Script 배포 URL 붙여넣기 ★
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSK9ebBgte9Lrh_uwL5UCKs9o5HVQRLHSeqGu2dTu6Pb59Z7rOKvCYBVrG6q7BZ1Yb/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGjReKNi3mUkTdO7zc8aajdx2O9Ug9nMckRwSrBk9rviYTMIZLCJbZ17hoyL9GgAo/exec';
   const SURVEY_URL = 'https://survey.eduro.go.kr';
-
-  let countdownTimer;
 
   function handleSubmit() {
     const grade = document.getElementById('grade').value;
     const classNum = document.getElementById('classNum').value;
+    const number = document.getElementById('number').value.trim();
     const name = document.getElementById('name').value.trim();
     const msg = document.getElementById('msg');
 
-    if (!grade || !classNum || !name) {
-      msg.textContent = '학년, 반, 이름을 모두 입력해주세요.';
+    if (!grade || !classNum || !number || !name) {
+      msg.textContent = '학년, 반, 출석번호, 이름을 모두 입력해주세요.';
       msg.className = 'msg error';
       return;
     }
@@ -299,41 +350,65 @@
     msg.textContent = '';
 
     const payload = {
-      grade: grade + '학년',
-      classNum: classNum + '반',
+      grade: grade,
+      classNum: classNum,
+      number: number,
       name: name,
       userAgent: navigator.userAgent
     };
 
+    // no-cors로 기록 저장 (응답 못 받음)
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    })
-    .then(() => showDone())
-    .catch(() => showDone()); // no-cors는 항상 opaque response이므로 완료 처리
+    });
+
+    // 인증번호 조회는 GET으로 별도 요청
+    const params = new URLSearchParams({ grade, classNum, number, name });
+    fetch(APPS_SCRIPT_URL + '?' + params.toString())
+      .then(res => res.text())
+      .then(text => {
+        let authCode = '';
+        try {
+          const json = JSON.parse(text);
+          authCode = json.authCode || '';
+        } catch(e) {}
+        if (!authCode) {
+          msg.textContent = '명단에서 학생 정보를 찾을 수 없습니다. 다시 확인해주세요.';
+          msg.className = 'msg error';
+          btn.disabled = false;
+          btn.textContent = '설문 참여하기 →';
+          return;
+        }
+        showDone(authCode);
+      })
+      .catch(() => {
+        msg.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+        msg.className = 'msg error';
+        btn.disabled = false;
+        btn.textContent = '설문 참여하기 →';
+      });
   }
 
-  function showDone() {
+  function showDone(authCode) {
     document.getElementById('formArea').style.display = 'none';
-    const done = document.getElementById('doneArea');
-    done.style.display = 'block';
+    document.getElementById('authCodeDisplay').textContent = authCode;
+    document.getElementById('doneArea').style.display = 'block';
+    window._authCode = authCode;
+  }
 
-    let count = 3;
-    document.getElementById('countdown').textContent = count;
-    countdownTimer = setInterval(() => {
-      count--;
-      document.getElementById('countdown').textContent = count;
-      if (count <= 0) {
-        clearInterval(countdownTimer);
-        goSurvey();
-      }
-    }, 1000);
+  function copyCode() {
+    navigator.clipboard.writeText(window._authCode).then(() => {
+      document.getElementById('copyMsg').textContent = '✅ 복사되었습니다!';
+      document.getElementById('copyBtn').textContent = '✅ 복사 완료';
+    }).catch(() => {
+      document.getElementById('copyMsg').textContent = '직접 선택해서 복사해주세요.';
+    });
   }
 
   function goSurvey() {
-    clearInterval(countdownTimer);
     window.location.href = SURVEY_URL;
   }
 </script>
