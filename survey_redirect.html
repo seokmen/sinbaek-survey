@@ -328,7 +328,7 @@
 <div class="footer">신백중학교 학교폭력 담당 · 문의: 교무실</div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzALuIcq-WtzHC9cF6eRN2hyKQCNCUQICapwgZwzT37yimychTEP5fCPDYmoqJZFpzh/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyett1_ufz5sXU2r-bSMG5mAhYNbppmBFdjvpupehvZnWIQT4fKIrj0_KiCWEXUkJWE/exec';
   const SURVEY_URL = 'https://survey.eduro.go.kr';
 
   function handleSubmit() {
@@ -365,31 +365,30 @@
       body: JSON.stringify(payload)
     });
 
-    // 인증번호 조회는 GET으로 별도 요청
-    const params = new URLSearchParams({ grade, classNum, number, name });
-    fetch(APPS_SCRIPT_URL + '?' + params.toString())
-      .then(res => res.text())
-      .then(text => {
-        let authCode = '';
-        try {
-          const json = JSON.parse(text);
-          authCode = json.authCode || '';
-        } catch(e) {}
-        if (!authCode) {
-          msg.textContent = '명단에서 학생 정보를 찾을 수 없습니다. 다시 확인해주세요.';
-          msg.className = 'msg error';
-          btn.disabled = false;
-          btn.textContent = '설문 참여하기 →';
-          return;
-        }
-        showDone(authCode);
-      })
-      .catch(() => {
-        msg.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+    // 인증번호 조회는 JSONP 방식으로
+    const params = new URLSearchParams({ grade, classNum, number, name, callback: 'handleAuthCode' });
+    window.handleAuthCode = function(data) {
+      document.getElementById('jsonpScript').remove();
+      const authCode = data.authCode || '';
+      if (!authCode) {
+        msg.textContent = '명단에서 학생 정보를 찾을 수 없습니다. 다시 확인해주세요.';
         msg.className = 'msg error';
         btn.disabled = false;
         btn.textContent = '설문 참여하기 →';
-      });
+        return;
+      }
+      showDone(authCode);
+    };
+    const script = document.createElement('script');
+    script.id = 'jsonpScript';
+    script.src = APPS_SCRIPT_URL + '?' + params.toString();
+    script.onerror = function() {
+      msg.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+      msg.className = 'msg error';
+      btn.disabled = false;
+      btn.textContent = '설문 참여하기 →';
+    };
+    document.body.appendChild(script);
   }
 
   function showDone(authCode) {
@@ -414,3 +413,4 @@
 </script>
 </body>
 </html>
+
